@@ -20,5 +20,5 @@ function toArrayBuffer(buf) {
 
 module.exports = {
   "transphobic": loadBloomFilter('transphobic'),
-  "tfriendly": loadBloomFilter('t-friendly'),
+  "transfriendly": loadBloomFilter('t-friendly'),
 };

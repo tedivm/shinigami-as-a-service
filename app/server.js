@@ -3,6 +3,11 @@ const filters = require("./filters.js")
 const express = require('express')
 var md = require('markdown-it')();
 
+const app = express()
+const port = process.env.PORT || 3000
+
+
+// Create the "homepage" using the repository readme file
 const INDEX = md.render(fs.readFileSync("README.md", "utf8"))
 const INDEX_HTML = `
 <html>
@@ -14,10 +19,8 @@ const INDEX_HTML = `
   </body>
 </html>`
 
-const app = express()
-const port = process.env.PORT || 3000
 
-
+// Service names to identity templates
 const SERVICE_MAP = {
   "buymeacoffee": "buymeacoffee.com/<user>",
   "cash": "cash.app/<user>",
@@ -45,25 +48,25 @@ const SERVICE_MAP = {
   "twitter": "twitter.com/<user>",
 }
 
-const PRIMARY_ROUTE = '/user/:service/:user'
-
 function getIdentifier(service, name) {
   return SERVICE_MAP[service].replace("<user>", name)
 }
 
+// Just documentation for the root page
 app.get('/', (req, res) => {
   res.send(INDEX_HTML)
 })
 
-app.get(PRIMARY_ROUTE, function(req, res, next){
+// Primary service route
+app.get('/user/:service/:user', function(req, res, next){
   const service = req.params.service
   const user = req.params.user
   res.send({
     "transphobic": filters.transphobic.test(getIdentifier(service, user)),
-    "transfriendly": filters.tfriendly.test(getIdentifier(service, user))
+    "transfriendly": filters.transfriendly.test(getIdentifier(service, user))
   })
 })
 
 app.listen(port, () => {
-  console.log(`Example app listening at http://localhost:${port}`)
+  console.log(`ShinigamiAAS listening on ${port}`)
 })
